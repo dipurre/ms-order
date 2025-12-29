@@ -3,6 +3,7 @@ package com.diegoip.order.config;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.TraceMetadata;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,11 +12,7 @@ import java.util.regex.Pattern;
 
 /**
  * Appender que envía logs ofuscados directamente a New Relic usando la API de Logs in Context.
- *
- * Uso en logback-spring.xml:
- * <appender name="NEW_RELIC_API" class="com.diegoip.order.config.MaskingNewRelicAsyncAppender"/>
- *
- * Requiere que el agente de New Relic esté corriendo.
+ * Incluye todos los campos necesarios para correlación de traces.
  */
 public class MaskingNewRelicAsyncAppender extends AppenderBase<ILoggingEvent> {
 
@@ -30,21 +27,61 @@ public class MaskingNewRelicAsyncAppender extends AppenderBase<ILoggingEvent> {
             // Ofuscar el mensaje
             String maskedMessage = maskMessage(event.getFormattedMessage());
 
-            // Crear atributos para el evento de log
+            // Crear atributos para el log
             Map<String, Object> logAttributes = new HashMap<>();
+
+            // Campos básicos del log
             logAttributes.put("message", maskedMessage);
+            logAttributes.put("level", event.getLevel().toString());
             logAttributes.put("log.level", event.getLevel().toString());
             logAttributes.put("logger.name", event.getLoggerName());
+            logAttributes.put("logger.fqcn", "ch.qos.logback.classic.Logger");
             logAttributes.put("thread.name", event.getThreadName());
+            logAttributes.put("thread.id", Thread.currentThread().getId());
             logAttributes.put("timestamp", event.getTimeStamp());
+
+            // Obtener información de tracing de New Relic
+            TraceMetadata traceMetadata = NewRelic.getAgent().getTraceMetadata();
+            String traceId = traceMetadata.getTraceId();
+            String spanId = traceMetadata.getSpanId();
+
+            if (traceId != null && !traceId.isEmpty()) {
+                logAttributes.put("trace.id", traceId);
+            }
+            if (spanId != null && !spanId.isEmpty()) {
+                logAttributes.put("span.id", spanId);
+            }
+
+            // Información de la entidad
+            Map<String, String> linkingMetadata = NewRelic.getAgent().getLinkingMetadata();
+            if (linkingMetadata != null) {
+                if (linkingMetadata.containsKey("entity.guid")) {
+                    logAttributes.put("entity.guid", linkingMetadata.get("entity.guid"));
+                    logAttributes.put("entity.guids", linkingMetadata.get("entity.guid"));
+                }
+                if (linkingMetadata.containsKey("entity.name")) {
+                    logAttributes.put("entity.name", linkingMetadata.get("entity.name"));
+                }
+                if (linkingMetadata.containsKey("hostname")) {
+                    logAttributes.put("hostname", linkingMetadata.get("hostname"));
+                }
+            }
+
+            // Campos adicionales de New Relic
+            logAttributes.put("newrelic.source", "logs.APM");
+            logAttributes.put("instrumentation", "logback-custom-masking");
 
             // Agregar MDC si existe (incluye trace.id y span.id si local_decorating está activo)
             if (event.getMDCPropertyMap() != null && !event.getMDCPropertyMap().isEmpty()) {
-                event.getMDCPropertyMap().forEach(logAttributes::put);
+                event.getMDCPropertyMap().forEach((key, value) -> {
+                    // Evitar sobrescribir los campos que ya agregamos
+                    if (!logAttributes.containsKey(key)) {
+                        logAttributes.put(key, value);
+                    }
+                });
             }
 
-            // Enviar como evento personalizado "Log" a New Relic
-            // Esto aparecerá en NRQL: SELECT * FROM Log WHERE appName = 'ms-order'
+            // Enviar como evento "Log" a New Relic
             NewRelic.getAgent().getInsights().recordCustomEvent("Log", logAttributes);
 
         } catch (Exception e) {

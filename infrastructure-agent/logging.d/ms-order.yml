@@ -1,0 +1,34 @@
+# New Relic Infrastructure Agent - Log Forwarding Configuration
+# ============================================================
+#
+# Este archivo configura el Infrastructure Agent para leer logs
+# desde archivos y enviarlos a New Relic.
+#
+# Ubicación del archivo:
+#   Windows: C:\Program Files\New Relic\newrelic-infra\logging.d\ms-order.yml
+#   Linux:   /etc/newrelic-infra/logging.d/ms-order.yml
+#
+# Documentación: https://docs.newrelic.com/docs/logs/forward-logs/forward-your-logs-using-infrastructure-agent/
+
+logs:
+  # Configuración para logs JSON (formato New Relic)
+  - name: ms-order-json-logs
+    file: E:\proyectos_diegoip\ms-order\logs\ms-order-json.log
+    attributes:
+      application: ms-order
+      environment: dev
+      team: backend
+      logtype: application
+    # El archivo ya está en formato JSON, New Relic lo parseará automáticamente
+
+  # Configuración para logs de texto (opcional, para backup)
+  - name: ms-order-text-logs
+    file: E:\proyectos_diegoip\ms-order\logs\ms-order.log
+    attributes:
+      application: ms-order
+      environment: dev
+      team: backend
+      logtype: application-text
+    # Parsear logs con formato estándar
+    pattern: "%{TIMESTAMP_ISO8601:timestamp} \\[%{DATA:thread}\\] %{LOGLEVEL:level}%{SPACE}%{DATA:logger} - %{GREEDYDATA:message}"
+

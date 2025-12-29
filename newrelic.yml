@@ -42,6 +42,40 @@ common: &default_settings
     record_sql: obfuscated
     stack_trace_threshold: 0.5
   
+  # Attributes Configuration - Ofuscación de datos sensibles
+  attributes:
+    enabled: true
+    # Excluir atributos sensibles de todos los destinos
+    exclude:
+      # Excluir request.uri si contiene datos sensibles
+      # - request.uri
+    # Incluir solo atributos específicos
+    include:
+      - request.uri
+      - request.method
+      - response.status
+
+  # Rules para ofuscar valores en atributos
+  # Estas reglas aplican regex para ofuscar datos sensibles en URIs
+  rules:
+    # Regla para ofuscar DNI (8 dígitos) en URIs
+    - name: "mask_dni_in_uri"
+      match_expression: "/dni/([0-9]{8})(?:/|$|\\?)"
+      replacement: "/dni/***MASKED***"
+      enabled: true
+      each_segment: false
+      replace_all: true
+      ignore: false
+
+    # Regla para ofuscar emails en URIs
+    - name: "mask_email_in_uri"
+      match_expression: "/email/([^/]+@[^/]+)"
+      replacement: "/email/***MASKED***"
+      enabled: true
+      each_segment: false
+      replace_all: true
+      ignore: false
+
   # Thread Profiler
   thread_profiler:
     enabled: true
