@@ -1,0 +1,53 @@
+# New Relic Java Agent Configuration
+# Documentation: https://docs.newrelic.com/docs/agents/java-agent/configuration/java-agent-configuration-config-file
+
+common: &default_settings
+  license_key: '<%= license_key %>'
+  app_name: ms-order
+  
+  # Distributed Tracing
+  distributed_tracing:
+    enabled: true
+  
+  # Application Logging
+  application_logging:
+    enabled: true
+    forwarding:
+      enabled: true
+      max_samples_stored: 10000
+    local_decorating:
+      enabled: true
+    metrics:
+      enabled: true
+  
+  # Labels
+  labels:
+    team: backend
+    service: diegoip_ms-order
+  
+  # Error Collector
+  error_collector:
+    enabled: true
+    ignore_status_codes: 404
+  
+  # Transaction Tracer
+  transaction_tracer:
+    enabled: true
+    transaction_threshold: apdex_f
+    record_sql: obfuscated
+    stack_trace_threshold: 0.5
+  
+  # Thread Profiler
+  thread_profiler:
+    enabled: true
+
+prod:
+  <<: *default_settings
+
+dev:
+  <<: *default_settings
+  app_name: ms-order[dev]
+  
+qa:
+  <<: *default_settings
+  app_name: ms-order[qa]

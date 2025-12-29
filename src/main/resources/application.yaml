@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: ms-order
+#  data:
+#    mongodb:
+#      auto-index-creation: true
+  mongodb:
+    uri: mongodb://admin:password123@localhost:27017/admin?authSource=admin
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.diegoip.order: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# New Relic Configuration
+#newrelic:
+#  config:
+#    app_name: ms-product
+#    license_key: ${NEW_RELIC_LICENSE_KEY}
+#    log_level: info
+#    audit_mode: false
+#    distributed_tracing:
+#      enabled: true
+#    application_logging:
+#      enabled: true
+#      forwarding:
+#        enabled: true
+#        max_samples_stored: 10000
+#      local_decorating:
+#        enabled: true

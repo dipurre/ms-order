@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ProductApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <envs>
+      <env name="NEW_RELIC_LICENSE_KEY" value="4798eab722cdf13500bc21f548cd0ec6FFFFNRAL" />
+    </envs>
+    <module name="ms-order" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.diegoip.order.ProductApplication" />
+    <option name="VM_PARAMETERS" value="-javaagent:E:\proyectos_diegoip\ms-order\newrelic\newrelic-agent-8.25.1.jar -Dnewrelic.environment=dev" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
