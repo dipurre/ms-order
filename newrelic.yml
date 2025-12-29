@@ -11,15 +11,20 @@ common: &default_settings
   
   # Application Logging
   application_logging:
+    # IMPORTANTE: El forwarding automático captura logs ANTES de la ofuscación
+    # Por eso lo desactivamos y usamos nuestro propio mecanismo con NewRelicEncoder
     enabled: true
     forwarding:
-      enabled: true
+      # DESACTIVADO: Captura logs SIN ofuscar, no podemos usarlo
+      # Los logs se envían a través del NewRelicEncoder con ofuscación
+      enabled: false
       max_samples_stored: 10000
     local_decorating:
+      # ACTIVADO: Agrega trace.id y span.id a los logs para correlación
       enabled: true
     metrics:
       enabled: true
-  
+
   # Labels
   labels:
     team: backend

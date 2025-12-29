@@ -84,13 +84,13 @@ db.orders.insertMany([
         "dni": "12345678",
         "items": [
             {
-                "productoId": "LAPTOP-HP-001",
+                "sku": "LAPTOP-HP-001",
                 "productoNombre": "Laptop HP Pavilion 15",
                 "cantidad": 1,
                 "precioUnitario": 899.99
             },
             {
-                "productoId": "MOUSE-LOG-002",
+                "sku": "MOUSE-LOG-002",
                 "productoNombre": "Mouse Logitech MX Master 3",
                 "cantidad": 1,
                 "precioUnitario": 99.99
@@ -105,13 +105,13 @@ db.orders.insertMany([
         "dni": "87654321",
         "items": [
             {
-                "productoId": "TECLADO-COR-003",
+                "sku": "TECLADO-COR-003",
                 "productoNombre": "Teclado Mecánico Corsair K70",
                 "cantidad": 2,
                 "precioUnitario": 149.99
             },
             {
-                "productoId": "HEADSET-HYP-005",
+                "sku": "HEADSET-HYP-005",
                 "productoNombre": "Audífonos HyperX Cloud II",
                 "cantidad": 1,
                 "precioUnitario": 79.99
@@ -126,7 +126,7 @@ db.orders.insertMany([
         "dni": "45678912",
         "items": [
             {
-                "productoId": "MONITOR-DELL-004",
+                "sku": "MONITOR-DELL-004",
                 "productoNombre": "Monitor Dell 27 pulgadas 4K",
                 "cantidad": 1,
                 "precioUnitario": 499.99
@@ -141,13 +141,13 @@ db.orders.insertMany([
         "dni": "78912345",
         "items": [
             {
-                "productoId": "SSD-SAMS-007",
+                "sku": "SSD-SAMS-007",
                 "productoNombre": "SSD Samsung 1TB NVMe",
                 "cantidad": 2,
                 "precioUnitario": 129.99
             },
             {
-                "productoId": "RAM-CORS-008",
+                "sku": "RAM-CORS-008",
                 "productoNombre": "Memoria RAM Corsair 16GB DDR4",
                 "cantidad": 2,
                 "precioUnitario": 89.99
@@ -162,13 +162,13 @@ db.orders.insertMany([
         "dni": "32165498",
         "items": [
             {
-                "productoId": "GPU-NVID-009",
+                "sku": "GPU-NVID-009",
                 "productoNombre": "Tarjeta Gráfica NVIDIA RTX 3070",
                 "cantidad": 1,
                 "precioUnitario": 599.99
             },
             {
-                "productoId": "LAPTOP-HP-001",
+                "sku": "LAPTOP-HP-001",
                 "productoNombre": "Laptop HP Pavilion 15",
                 "cantidad": 1,
                 "precioUnitario": 899.99
@@ -183,13 +183,13 @@ db.orders.insertMany([
         "dni": "65498732",
         "items": [
             {
-                "productoId": "CHAIR-SECR-010",
+                "sku": "CHAIR-SECR-010",
                 "productoNombre": "Silla Gamer Secretlab",
                 "cantidad": 1,
                 "precioUnitario": 449.99
             },
             {
-                "productoId": "WEBCAM-LOG-006",
+                "sku": "WEBCAM-LOG-006",
                 "productoNombre": "Webcam Logitech C920",
                 "cantidad": 1,
                 "precioUnitario": 79.99
@@ -204,13 +204,13 @@ db.orders.insertMany([
         "dni": "98765432",
         "items": [
             {
-                "productoId": "MOUSE-LOG-002",
+                "sku": "MOUSE-LOG-002",
                 "productoNombre": "Mouse Logitech MX Master 3",
                 "cantidad": 3,
                 "precioUnitario": 99.99
             },
             {
-                "productoId": "TECLADO-COR-003",
+                "sku": "TECLADO-COR-003",
                 "productoNombre": "Teclado Mecánico Corsair K70",
                 "cantidad": 3,
                 "precioUnitario": 149.99
@@ -225,7 +225,7 @@ db.orders.insertMany([
         "dni": "11223344",
         "items": [
             {
-                "productoId": "HEADSET-HYP-005",
+                "sku": "HEADSET-HYP-005",
                 "productoNombre": "Audífonos HyperX Cloud II",
                 "cantidad": 2,
                 "precioUnitario": 79.99

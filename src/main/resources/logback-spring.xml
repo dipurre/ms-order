@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    
+
+    <!-- TurboFilter para ofuscar ANTES de que New Relic capture los logs -->
+    <turboFilter class="com.diegoip.order.config.MaskingTurboFilterV2"/>
+
     <!-- Console Appender con Masking -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
@@ -11,20 +14,35 @@
         </encoder>
     </appender>
 
+    <!-- New Relic Appender con Masking -->
+    <!-- Envía logs ofuscados directamente a New Relic usando la API de Insights -->
+    <appender name="NEW_RELIC_API" class="com.diegoip.order.config.MaskingNewRelicAsyncAppender"/>
+
+    <!-- Wrapper asíncrono para mejor rendimiento -->
+    <appender name="NEW_RELIC_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="NEW_RELIC_API"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+
     <!-- Logger específico para el paquete de la aplicación -->
     <logger name="com.diegoip.order" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="NEW_RELIC_ASYNC" />
     </logger>
-    
+
     <!-- Logger para MongoDB -->
     <logger name="org.springframework.data.mongodb" level="INFO" />
-    
+
     <!-- Logger para Spring Framework -->
     <logger name="org.springframework" level="INFO" />
-    
+
     <!-- Root Logger -->
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="NEW_RELIC_ASYNC" />
     </root>
-    
+
 </configuration>
