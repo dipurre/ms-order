@@ -57,12 +57,9 @@
         <includeCallerData>true</includeCallerData>
     </appender>
 
-    <!-- New Relic Appender con Masking (usa Insights API) -->
-    <appender name="NEW_RELIC_API" class="com.diegoip.order.config.MaskingNewRelicAsyncAppender"/>
-
     <!-- New Relic Log API Appender con correlación de transacciones -->
     <!-- Envía logs ofuscados directamente a la Log API de New Relic -->
-    <!-- Incluye trace.id y span.id para correlación con APM -->
+    <!-- Usa patrones: Strategy (Masking), Chain of Responsibility (Rules), Builder (Payload) -->
     <appender name="NEW_RELIC_LOG_API" class="com.diegoip.order.config.MaskingNewRelicLogApiAppender"/>
 
     <!-- Wrapper asíncrono para mejor rendimiento -->

@@ -62,7 +62,7 @@ public class ProductController {
             Product createdProduct = productService.createProduct(product);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
         } catch (IllegalArgumentException e) {
-            log.error("Error al crear producto: {}", e.getMessage());
+            log.error("Error al crear producto", e);
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse(e.getMessage()));
         }
