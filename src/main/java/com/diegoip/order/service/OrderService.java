@@ -60,7 +60,7 @@ public class OrderService {
         log.info("Creando nuevo pedido para DNI: {}", order.getDni());
         Order savedOrder = orderRepository.save(order);
         log.info("Pedido creado exitosamente con número: {}", savedOrder.getNumeroPedido());
-        NewRelic.incrementCounter("OrderService/createOrder");
+        NewRelic.incrementCounter("Custom/createOrder/Success");
         NewRelic.addCustomParameter("orderId", savedOrder.getNumeroPedido());
         NewRelic.addCustomParameter("dni", savedOrder.getDni());
         return savedOrder;

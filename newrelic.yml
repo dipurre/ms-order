@@ -5,6 +5,10 @@ common: &default_settings
   license_key: '<%= license_key %>'
   app_name: ms-order
 
+  # High Security Mode - Previene envío de datos sensibles a New Relic
+  # Requiere habilitarlo también en la cuenta de New Relic (Settings > High Security)
+  high_security: false
+
   # Application Logging
   application_logging:
     # Habilitado solo para métricas, el envío de logs lo hace nuestro appender
@@ -18,6 +22,7 @@ common: &default_settings
     metrics:
       # ACTIVADO: Para ver estadísticas de logs en New Relic (logs/min, por nivel, etc.)
       enabled: true
+
 
   # Labels
   labels:
