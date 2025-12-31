@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class NewRelicContextExtractor {
 
-    private static final String DEFAULT_APP_NAME = "ms-order";
+    private static final String DEFAULT_APP_NAME = "unknown";
     private static final String DEFAULT_HOSTNAME = "unknown";
 
     /**

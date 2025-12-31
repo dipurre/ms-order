@@ -50,8 +50,10 @@ public class MaskingNewRelicLogApiAppender extends AppenderBase<ILoggingEvent> {
         logApiClient = new NewRelicLogApiClient(licenseKey);
 
         if (!logApiClient.isConfigured()) {
+            System.err.println("[MaskingNewRelicLogApiAppender] WARN: New Relic License Key not found. Logs will not be sent to Log API.");
             addWarn("New Relic License Key not found. Logs will not be sent to Log API.");
         } else {
+            System.out.println("[MaskingNewRelicLogApiAppender] INFO: Initialized successfully. Logs will be sent to New Relic Log API.");
             addInfo("MaskingNewRelicLogApiAppender initialized successfully.");
         }
 
@@ -153,6 +155,15 @@ public class MaskingNewRelicLogApiAppender extends AppenderBase<ILoggingEvent> {
 
     private NewRelicLogContext buildLogContext(LogEventSnapshot snapshot, String maskedMessage) {
         NewRelicContext nrContext = snapshot.newRelicContext();
+        Map<String, String> mdcMap = snapshot.mdcMap();
+
+        // Obtener trace.id y span.id desde MDC (capturado por NewRelicTraceTurboFilter)
+        // Si no están en MDC, usar los valores del contextExtractor como fallback
+        String traceId = getValueFromMdcOrContext(mdcMap, "trace.id", nrContext.traceId());
+        String spanId = getValueFromMdcOrContext(mdcMap, "span.id", nrContext.spanId());
+        String entityGuid = getValueFromMdcOrContext(mdcMap, "entity.guid", nrContext.entityGuid());
+        String entityName = getValueFromMdcOrContext(mdcMap, "entity.name", nrContext.entityName());
+        String hostname = getValueFromMdcOrContext(mdcMap, "hostname", nrContext.hostname());
 
         var builder = NewRelicLogContext.builder()
             .message(maskedMessage)
@@ -161,12 +172,12 @@ public class MaskingNewRelicLogApiAppender extends AppenderBase<ILoggingEvent> {
             .threadName(snapshot.threadName())
             .threadId(snapshot.threadId())
             .timestamp(snapshot.timestamp())
-            .traceId(nrContext.traceId())
-            .spanId(nrContext.spanId())
-            .entityGuid(nrContext.entityGuid())
-            .entityName(nrContext.entityName())
-            .hostname(nrContext.hostname())
-            .addAttributes(snapshot.mdcMap());
+            .traceId(traceId)
+            .spanId(spanId)
+            .entityGuid(entityGuid)
+            .entityName(entityName)
+            .hostname(hostname)
+            .addAttributes(mdcMap);
 
         // Agregar información de error si existe
         if (snapshot.errorClass() != null) {
@@ -176,6 +187,19 @@ public class MaskingNewRelicLogApiAppender extends AppenderBase<ILoggingEvent> {
         }
 
         return builder.build();
+    }
+
+    /**
+     * Obtiene un valor del MDC, o usa el fallback si no existe o está vacío.
+     */
+    private String getValueFromMdcOrContext(Map<String, String> mdcMap, String key, String fallback) {
+        if (mdcMap != null && mdcMap.containsKey(key)) {
+            String value = mdcMap.get(key);
+            if (value != null && !value.isEmpty()) {
+                return value;
+            }
+        }
+        return fallback;
     }
 
     private String resolveLicenseKey() {

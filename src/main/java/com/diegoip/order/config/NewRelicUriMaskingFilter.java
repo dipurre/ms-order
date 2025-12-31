@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
  * Filtro que ofusca datos sensibles en la URI de la transacción de New Relic.
  * Esto afecta cómo se muestra request.uri en las transacciones.
  */
-@Component
-@Order(1)
+/*@Component
+@Order(1)*/
 public class NewRelicUriMaskingFilter implements Filter {
 
     private static final Pattern DNI_PATTERN = Pattern.compile("/dni/([0-9]{8})(?:/|$|\\?)");

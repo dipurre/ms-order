@@ -3,6 +3,7 @@ package com.diegoip.order.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.newrelic.api.agent.NewRelic;
 import org.springframework.stereotype.Service;
 
 import com.diegoip.order.model.Order;
@@ -40,6 +41,7 @@ public class OrderService {
         log.info("Buscando pedidos por DNI: {}", dni);
         List<Order> orders = orderRepository.findByDni(dni);
         log.info("Se encontraron {} pedidos para el DNI: {}", orders.size(), dni);
+        NewRelic.incrementCounter("OrderService/getOrdersByDni");
         return orders;
     }
     
@@ -58,6 +60,9 @@ public class OrderService {
         log.info("Creando nuevo pedido para DNI: {}", order.getDni());
         Order savedOrder = orderRepository.save(order);
         log.info("Pedido creado exitosamente con número: {}", savedOrder.getNumeroPedido());
+        NewRelic.incrementCounter("OrderService/createOrder");
+        NewRelic.addCustomParameter("orderId", savedOrder.getNumeroPedido());
+        NewRelic.addCustomParameter("dni", savedOrder.getDni());
         return savedOrder;
     }
     

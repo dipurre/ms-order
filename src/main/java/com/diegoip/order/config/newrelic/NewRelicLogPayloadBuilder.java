@@ -74,6 +74,9 @@ public class NewRelicLogPayloadBuilder {
     private void appendTraceContext() {
         if (context.getTraceId() != null && !context.getTraceId().isEmpty()) {
             json.append(",\"trace.id\":\"").append(escape(context.getTraceId())).append("\"");
+        }else {
+            String tracr = context.getCustomAttributes().get("trace.id");
+
         }
         if (context.getSpanId() != null && !context.getSpanId().isEmpty()) {
             json.append(",\"span.id\":\"").append(escape(context.getSpanId())).append("\"");

@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- Propiedades -->
-    <property name="LOG_PATH" value="${LOG_PATH:-logs}"/>
-    <property name="LOG_FILE" value="${LOG_FILE:-ms-order}"/>
-
-    <!-- TurboFilter para ofuscar ANTES de que New Relic capture los logs -->
-    <turboFilter class="com.diegoip.order.config.MaskingTurboFilterV2"/>
-
+    <turboFilter class="com.diegoip.order.config.NewRelicTraceTurboFilter"/>
     <!-- Console Appender con Masking (para desarrollo) -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
@@ -16,45 +10,6 @@
             </layout>
             <charset>UTF-8</charset>
         </encoder>
-    </appender>
-
-    <!-- File Appender con formato JSON para New Relic Infrastructure Agent -->
-    <!-- Los logs se escriben ofuscados en formato JSON que el agente leerá -->
-    <appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${LOG_FILE}-json.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${LOG_FILE}-json.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <maxFileSize>50MB</maxFileSize>
-            <maxHistory>7</maxHistory>
-            <totalSizeCap>500MB</totalSizeCap>
-        </rollingPolicy>
-        <!-- Usar MaskingNewRelicEncoder para ofuscar y formatear como JSON -->
-        <encoder class="com.diegoip.order.config.MaskingNewRelicEncoder"/>
-    </appender>
-
-    <!-- File Appender con formato texto (backup/debug) -->
-    <appender name="FILE_TEXT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${LOG_FILE}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${LOG_FILE}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <maxFileSize>50MB</maxFileSize>
-            <maxHistory>7</maxHistory>
-            <totalSizeCap>500MB</totalSizeCap>
-        </rollingPolicy>
-        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="com.diegoip.order.config.MaskingPatternLayoutV2">
-                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-            </layout>
-            <charset>UTF-8</charset>
-        </encoder>
-    </appender>
-
-    <!-- Async wrapper para FILE_JSON (mejor rendimiento) -->
-    <appender name="ASYNC_FILE_JSON" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="FILE_JSON"/>
-        <queueSize>512</queueSize>
-        <discardingThreshold>0</discardingThreshold>
-        <includeCallerData>true</includeCallerData>
     </appender>
 
     <!-- New Relic Log API Appender con correlación de transacciones -->
@@ -74,8 +29,6 @@
     <!-- Logger específico para el paquete de la aplicación -->
     <logger name="com.diegoip.order" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="ASYNC_FILE_JSON" />
-        <appender-ref ref="FILE_TEXT" />
         <appender-ref ref="NEW_RELIC_ASYNC" />
     </logger>
 
@@ -88,7 +41,6 @@
     <!-- Root Logger -->
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="ASYNC_FILE_JSON" />
         <appender-ref ref="NEW_RELIC_ASYNC" />
     </root>
 
